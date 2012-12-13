@@ -33,7 +33,7 @@ module Roqua
       info("#{message}:finished", {duration: duration}.merge(options))
       value
     rescue => e
-      error("#{message}:failed", options)
+      error("#{message}:failed", {exception: e.class, message: e.message}.merge(options))
       raise
     end
   end

@@ -49,10 +49,10 @@ module Roqua
 
       it 'logs the start and failure of a block if it raises' do
         logwrapper.lifecycle 'testevent' do
-          raise "Failed"
+          raise StandardError, "Foo"
         end rescue nil
         log.should include('testevent:started')
-        log.should include('testevent:failed')
+        log.should include('testevent:failed exception=StandardError message=Foo')
       end
 
       it 'reraises the exception' do

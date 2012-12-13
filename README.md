@@ -27,6 +27,7 @@ class Example
       sleep 5
     end
   end
+```
 
 ## Contributing
 

@@ -14,7 +14,7 @@ module Roqua
         else
           "#{key}=#{value}"
         end
-      end.join(" ")
+      end.join(" ").gsub("\n", " ")
       logger.send(level, "#{message} #{parameters}".strip)
     end
 

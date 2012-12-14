@@ -27,6 +27,11 @@ module Roqua
         logwrapper.add :info, "testevent", float: 0.123456789
         log.should include("testevent float=0.1235\n")
       end
+
+      it 'replaces newlines in parameters with spaces' do
+        logwrapper.add :info, "testevent", param: "this\nshould not have newlines"
+        log.should include("testevent param=this should not have newlines")
+      end
     end
 
     describe '#lifecycle' do

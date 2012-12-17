@@ -27,6 +27,13 @@ class Example
       sleep 5
     end
   end
+
+  def third
+    # This example is the same as the `another` example.
+    sleep 5
+  end
+  log :third, 'example.lifecycle', optional: 'params'
+end
 ```
 
 ## Contributing

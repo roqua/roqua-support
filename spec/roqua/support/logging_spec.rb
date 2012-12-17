@@ -68,5 +68,24 @@ module Roqua
         }.to raise_error('Foo')
       end
     end
+
+    describe '.lifecycle' do
+      it 'wraps given method' do
+        ::Roqua.stub(:logger => logwrapper)
+
+        test = Class.new do
+          include Logging
+          
+          def foo
+            'bar'
+          end
+          log :foo, 'roqua.testevent.foo'
+        end
+
+        test.new.foo.should == 'bar'
+        log.should include('roqua.testevent.foo:started')
+        log.should include('roqua.testevent.foo:finished')
+      end
+    end
   end
 end

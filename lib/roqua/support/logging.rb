@@ -1,44 +1,24 @@
+require 'active_support/core_ext/module/aliasing'
+require 'roqua/support/log_wrapper'
+
 module Roqua
-  class LogWrapper
-    attr_reader :logger
-
-    def initialize(logger)
-      @logger = logger
+  module Logging
+    def self.included(base)
+      base.extend ClassMethods
     end
 
-    def add(level, message, options = {})
-      parameters = options.map do |key, value| 
-        case value
-        when Float
-          "#{key}=%.4f" % value
-        else
-          "#{key}=#{value}"
+    module ClassMethods
+      def log(method_name, message, options = {})
+        define_method(:"#{method_name}_with_log") do |*args, &block|
+          logger.lifecycle(message, options) do
+            send(:"#{method_name}_without_log", *args, &block)
+          end
         end
-      end.join(" ").gsub("\n", " ")
-      logger.send(level, "#{message} #{parameters}".strip)
-    end
 
-    [:fatal, :error, :warn, :info, :debug].each do |level|
-      define_method(level) do |*args|
-        add(level, *args)
+        alias_method_chain method_name, 'log'
       end
     end
 
-    def lifecycle(message, options = {})
-      started_at = Time.now.to_f
-      info("#{message}:started", options)
-      value = yield
-      finished_at = Time.now.to_f
-      duration = finished_at - started_at
-      info("#{message}:finished", {duration: duration}.merge(options))
-      value
-    rescue => e
-      error("#{message}:failed", {exception: e.class, message: e.message}.merge(options))
-      raise
-    end
-  end
-
-  module Logging
     def logger
       Roqua.logger
     end

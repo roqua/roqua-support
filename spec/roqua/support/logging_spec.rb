@@ -61,8 +61,8 @@ module Roqua
       end
 
       it 'reraises the exception' do
-        expect { 
-          logwrapper.lifecycle 'testevent' do 
+        expect {
+          logwrapper.lifecycle 'testevent' do
             raise "Foo"
           end
         }.to raise_error('Foo')
@@ -75,7 +75,7 @@ module Roqua
 
         test = Class.new do
           include Logging
-          
+
           def foo
             'bar'
           end

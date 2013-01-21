@@ -10,7 +10,7 @@ module Roqua
     module ClassMethods
       def log(method_name, message, options = {})
         define_method(:"#{method_name}_with_log") do |*args, &block|
-          logger.lifecycle(message, options) do
+          eventlog.lifecycle(message, options) do
             send(:"#{method_name}_without_log", *args, &block)
           end
         end
@@ -19,7 +19,7 @@ module Roqua
       end
     end
 
-    def logger
+    def eventlog
       Roqua.logger
     end
   end

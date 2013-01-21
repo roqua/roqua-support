@@ -14,7 +14,7 @@ class Example
   def methodname
     # This writes a single line to the event log with
     # the given event name and parameters as key=value format.
-    logger.info 'example.eventname', optional: 'extra parameters'
+    eventlog.info 'example.eventname', optional: 'extra parameters'
   end
 
   def another
@@ -23,7 +23,7 @@ class Example
     # ':finished', ':failed' are appended to the event name
     # given, and the duration of the block is logged with
     # the :finished log line.
-    logger.lifecycle 'example.lifecycle', optional: 'params' do
+    eventlog.lifecycle 'example.lifecycle', optional: 'params' do
       sleep 5
     end
   end

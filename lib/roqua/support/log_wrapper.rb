@@ -7,10 +7,12 @@ module Roqua
     end
 
     def add(level, message, options = {})
-      parameters = options.map do |key, value| 
+      parameters = options.map do |key, value|
         case value
         when Float
           "#{key}=%.4f" % value
+        when String
+          "#{key}=#{value.inspect}"
         else
           "#{key}=#{value}"
         end

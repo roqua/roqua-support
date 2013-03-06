@@ -20,7 +20,7 @@ module Roqua
 
       it 'writes given parameters as key=value pairs' do
         logwrapper.add :info, "testevent", extra: 'params', go: 'here'
-        log.should include("testevent extra=params go=here\n")
+        log.should include('testevent extra="params" go="here"' + "\n")
       end
 
       it 'rounds given float parameters' do
@@ -28,9 +28,9 @@ module Roqua
         log.should include("testevent float=0.1235\n")
       end
 
-      it 'replaces newlines in parameters with spaces' do
+      it 'escapes newline characters in params' do
         logwrapper.add :info, "testevent", param: "this\nshould not have newlines"
-        log.should include("testevent param=this should not have newlines")
+        log.should include('testevent param="this\nshould not have newlines"')
       end
     end
 
@@ -39,8 +39,8 @@ module Roqua
         logwrapper.lifecycle 'testevent', extra: 'params' do
           1 + 1
         end
-        log.should include('testevent:started extra=params')
-        log.should match(/testevent:finished.*extra=params/)
+        log.should include('testevent:started extra="params"')
+        log.should match(/testevent:finished.*extra="params"/)
       end
 
       it 'logs the duration of the block with the finished event' do
@@ -57,7 +57,7 @@ module Roqua
           raise StandardError, "Foo"
         end rescue nil
         log.should include('testevent:started')
-        log.should include('testevent:failed exception=StandardError message=Foo')
+        log.should include('testevent:failed exception=StandardError message="Foo"')
       end
 
       it 'reraises the exception' do

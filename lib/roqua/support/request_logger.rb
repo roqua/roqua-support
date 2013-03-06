@@ -22,6 +22,7 @@ module Roqua
         data.merge! extract_request(payload)
         data.merge! extract_status(payload)
         data.merge! extract_parameters(payload)
+        data.merge! redirect_information
         data.merge! extra_logged_information
         data.merge! runtimes(event)
 
@@ -30,6 +31,15 @@ module Roqua
       rescue Exception => e
         eventlog.info 'roqua.web:logerror', {class: e.class, message: e.message}
         raise
+      end
+
+      def redirect_to(event)
+        # Unfortunately, when a redirect is triggered by your application's code,
+        # ActionController fires two events. One for the redirect itself, and
+        # another one when the request is finished. Unfortunately the final event
+        # doesn't include the redirect, so we store the redirect URL as a
+        # thread-local attribute and refers to it in process_action.
+        Thread.current[:roqua_request_log_redirect] = event.payload[:location]
       end
 
       private
@@ -64,6 +74,15 @@ module Roqua
           { :status => 500, :error => "#{exception}:#{message}" }
         else
           { :status => 0 }
+        end
+      end
+
+      def redirect_information
+        if location = Thread.current[:roqua_request_log_redirect]
+          Thread.current[:roqua_request_log_redirect] = nil
+          {location: location}
+        else
+          {}
         end
       end
 

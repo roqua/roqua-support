@@ -16,12 +16,6 @@ describe Roqua::Support::RequestLogger do
 
   let(:subscriber) { Roqua::Support::RequestLogger.new }
 
-  let(:redirect) {
-    ActiveSupport::Notifications::Event.new(
-      'redirect_to.action_controller', Time.now, Time.now, 1, location: 'http://example.com', status: 302
-    )
-  }
-
   context 'when processing a request' do
     let(:event) do
       ActiveSupport::Notifications::Event.new('process_action.action_controller',
@@ -119,6 +113,35 @@ describe Roqua::Support::RequestLogger do
       event.payload[:exception] = nil
       subscriber.process_action(event)
       logstream.string.should =~ /status=0 /
+    end
+  end
+
+  context 'when the request redirected' do
+    let(:event) do
+      ActiveSupport::Notifications::Event.new('process_action.action_controller',
+                                              Time.new(2013, 02, 28, 12, 34, 56),
+                                              Time.new(2013, 02, 28, 12, 34, 57), 2,
+          status: 200, format: 'application/json', method: 'GET', path: '/home?foo=bar',
+          params: {'controller' => 'home', 'action' => 'index', 'foo' => 'bar'},
+          db_runtime: 0.02, view_runtime: 0.01
+      )
+    end
+
+    let(:redirect) {
+      ActiveSupport::Notifications::Event.new(
+        'redirect_to.action_controller', Time.now, Time.now, 1, location: 'http://example.com', status: 302
+      )
+    }
+
+    it 'logs the redirect' do
+      subscriber.redirect_to(redirect)
+      subscriber.process_action(event)
+      log.should include('location="http://example.com"')
+
+      # next request should no longer get location
+      logstream.truncate 0
+      subscriber.process_action(event)
+      log.should_not include('location=')
     end
   end
 end

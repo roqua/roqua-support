@@ -1,3 +1,5 @@
+require 'json'
+
 module Roqua
   class LogWrapper
     attr_reader :logger
@@ -7,15 +9,7 @@ module Roqua
     end
 
     def add(level, message, options = {})
-      parameters = options.map do |key, value| 
-        case value
-        when Float
-          "#{key}=%.4f" % value
-        else
-          "#{key}=#{value}"
-        end
-      end.join(" ").gsub("\n", " ")
-      logger.send(level, "#{message} #{parameters}".strip)
+      logger.send(level, "#{message} #{options.to_json}".strip)
     end
 
     [:fatal, :error, :warn, :info, :debug].each do |level|

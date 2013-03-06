@@ -39,37 +39,37 @@ describe Roqua::Support::RequestLogger do
 
     it "logs the HTTP method" do
       subscriber.process_action(event)
-      logstream.string.should include('method="GET"')
+      logstream.string.should include('"method":"GET"')
     end
 
     it "logs the status code returned" do
       subscriber.process_action(event)
-      logstream.string.should include('status=200 ')
+      logstream.string.should include('"status":200')
     end
 
     it "logs the controller and action" do
       subscriber.process_action(event)
-      logstream.string.should include('controller="home" action="index"')
+      logstream.string.should include('"controller":"home","action":"index"')
     end
 
     it 'logs request parameters' do
       subscriber.process_action(event)
-      logstream.string.should include('params={"foo"=>"bar"}')
+      logstream.string.should include('"params":{"foo":"bar"}')
     end
 
     it "logs how long the request took" do
       subscriber.process_action(event)
-      logstream.string.should =~ /duration=1000.0000 /
+      logstream.string.should =~ /"duration":1000.0/
     end
 
     it "logs the view rendering time" do
       subscriber.process_action(event)
-      logstream.string.should =~ /view=0.0100 /
+      logstream.string.should =~ /"view":0.01/
     end
 
     it "logs the database rendering time" do
       subscriber.process_action(event)
-      logstream.string.should =~ /db=0.0200/
+      logstream.string.should =~ /"db":0.02/
     end
 
     it 'logs extra information added in the controller' do
@@ -82,7 +82,7 @@ describe Roqua::Support::RequestLogger do
       end
       controller.new.index
       subscriber.process_action(event)
-      logstream.string.should include('current_user="johndoe"')
+      logstream.string.should include('"current_user":"johndoe"')
 
       # next request should not still maintain this data
       logstream.truncate 0
@@ -104,15 +104,15 @@ describe Roqua::Support::RequestLogger do
 
     it "logs the 500 status when an exception occurred" do
       subscriber.process_action(event)
-      logstream.string.should =~ /status=500 /
-      logstream.string.should =~ /error="AbstractController::ActionNotFound:Route not found" /
+      logstream.string.should =~ /"status":500/
+      logstream.string.should =~ /"error":"AbstractController::ActionNotFound:Route not found"/
     end
 
     it "should return an unknown status when no status or exception is found" do
       event.payload[:status] = nil
       event.payload[:exception] = nil
       subscriber.process_action(event)
-      logstream.string.should =~ /status=0 /
+      logstream.string.should =~ /"status":0/
     end
   end
 
@@ -136,12 +136,12 @@ describe Roqua::Support::RequestLogger do
     it 'logs the redirect' do
       subscriber.redirect_to(redirect)
       subscriber.process_action(event)
-      log.should include('location="http://example.com"')
+      log.should include('"location":"http://example.com"')
 
       # next request should no longer get location
       logstream.truncate 0
       subscriber.process_action(event)
-      log.should_not include('location=')
+      log.should_not include('location')
     end
   end
 end

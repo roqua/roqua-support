@@ -36,6 +36,15 @@ class Example
 end
 ```
 
+### Rails logger
+
+You can also add an additional request logger by adding this to `config/initializers/request_logger.rb`:
+
+```ruby
+require 'roqua/support/request_logger'
+Roqua::Support::RequestLogger.attach_to :action_controller%
+```
+
 ## Contributing
 
 1. Fork it

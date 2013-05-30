@@ -42,7 +42,7 @@ You can also add an additional request logger by adding this to `config/initiali
 
 ```ruby
 require 'roqua/support/request_logger'
-Roqua::Support::RequestLogger.attach_to :action_controller%
+Roqua::Support::RequestLogger.attach_to :action_controller
 ```
 
 ## Contributing

@@ -27,6 +27,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler (~> 1.0)
   rake
   roqua-support!
   rspec (~> 2.12.0)

@@ -8,7 +8,7 @@ describe Roqua do
   end
 
   describe '#logger=' do
-    let(:logger) { stub }
+    let(:logger) { double }
 
     it 'wraps a given logger' do
       Roqua.logger = logger

@@ -1,5 +1,6 @@
 require 'logger'
 require 'roqua/support/logging'
+require 'roqua/support/errors'
 
 module Roqua
   class << self

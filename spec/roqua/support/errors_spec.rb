@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'roqua/support/errors'
 
 describe 'Error reporting' do

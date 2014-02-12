@@ -36,6 +36,7 @@ describe 'Error reporting' do
 
     it 'sends notifications to appsignal' do
       stub_const("Appsignal", Module.new)
+      Appsignal.stub(active?: true)
       Appsignal.stub(is_ignored_exception?: false, agent: agent)
       stub_const("Appsignal::Transaction", double("Transaction", create: transaction))
 

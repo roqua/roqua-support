@@ -34,11 +34,13 @@ module Roqua
           # this functionality should be supported directly by Appsignal.send_exception.
           # Appsignal.send_exception(exception, parameters: parameters)
 
-          transaction = Appsignal::Transaction.create(SecureRandom.uuid, ENV.to_hash)
-          transaction.set_tags(parameters)
-          transaction.add_exception(exception)
-          transaction.complete!
-          Appsignal.agent.send_queue
+          if Appsignal.active?
+            transaction = Appsignal::Transaction.create(SecureRandom.uuid, ENV.to_hash)
+            transaction.set_tags(parameters)
+            transaction.add_exception(exception)
+            transaction.complete!
+            Appsignal.agent.send_queue
+          end
         end
       end
     end

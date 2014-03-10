@@ -1,3 +1,7 @@
+## 0.1.5 / 2014-03-10
+
+* Make sure to raise when uniq_find_or_create cannot find a record
+
 ## 0.1.4 / 2014-02-25
 
 * Add ActiveRecord \#uniq\_find\_or\_create\_by! method to find or create records with uniqueness constraints enforced by the database.

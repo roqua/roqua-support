@@ -20,7 +20,7 @@ describe ActiveRecord::Base do
 
   describe '#uniq_find_or_create_by' do
     it 'tries to find or create a record by the attributes provided' do
-      expect(ActiveRecord::Base).to receive(:find_or_create_by).with(attributes, &block)
+      expect(ActiveRecord::Base).to receive(:find_or_create_by).with(attributes, &block).and_return record
       ActiveRecord::Base.uniq_find_or_create_by attributes, &block
     end
 
@@ -34,6 +34,15 @@ describe ActiveRecord::Base do
       allow(ActiveRecord::Base).to receive(:find_or_create_by).with(attributes, &block)
                                                               .and_raise ActiveRecord::RecordNotUnique
       expect(ActiveRecord::Base.uniq_find_or_create_by attributes, &block).to eq(record)
+    end
+
+    it 'raises when a concurrent record is detected by the database but could not be queried for unknown reasons' do
+      allow(ActiveRecord::Base).to receive(:find_by).with(attributes).and_return nil
+      allow(ActiveRecord::Base).to receive(:find_or_create_by).with(attributes, &block)
+                                                              .and_raise ActiveRecord::RecordNotUnique
+      expect do
+        ActiveRecord::Base.uniq_find_or_create_by attributes, &block
+      end.to raise_error ActiveRecord::RecordNotUnique
     end
 
     it 'returns the created record for inspection when validation fails' do
@@ -59,6 +68,15 @@ describe ActiveRecord::Base do
       allow(ActiveRecord::Base).to receive(:find_or_create_by!).with(attributes, &block)
                                                                .and_raise ActiveRecord::RecordNotUnique
       expect(ActiveRecord::Base.uniq_find_or_create_by! attributes, &block).to eq(record)
+    end
+
+    it 'raises when a concurrent record is detected by the database but could not be queried for unknown reasons' do
+      allow(ActiveRecord::Base).to receive(:find_by).with(attributes).and_return nil
+      allow(ActiveRecord::Base).to receive(:find_or_create_by!).with(attributes, &block)
+                                                               .and_raise ActiveRecord::RecordNotUnique
+      expect do
+        ActiveRecord::Base.uniq_find_or_create_by! attributes, &block
+      end.to raise_error ActiveRecord::RecordNotUnique
     end
 
     it 'raises when creating a new record causes validation failures not due to concurrency' do

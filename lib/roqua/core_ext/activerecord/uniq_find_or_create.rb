@@ -9,16 +9,16 @@ module ActiveRecord
     # containing the validation errors is returned instead.
     def self.uniq_find_or_create_by(attributes, &block)
       record = find_or_create_by(attributes, &block)
-    rescue ActiveRecord::RecordNotUnique
+    rescue ActiveRecord::RecordNotUnique => exception
     ensure
-      return find_by(attributes) || record
+      return find_by(attributes) || record || raise(exception)
     end
 
     # Use this method if you want an exception to be raised when creating a new record fails due to some validation
     # error other than uniqueness.
     def self.uniq_find_or_create_by!(attributes, &block)
       find_or_create_by!(attributes, &block)
-    rescue ActiveRecord::RecordNotUnique
+    rescue ActiveRecord::RecordNotUnique => exception
     rescue ActiveRecord::RecordInvalid => exception
     ensure
       return find_by(attributes) || raise(exception)

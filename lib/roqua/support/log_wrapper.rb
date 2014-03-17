@@ -5,11 +5,11 @@ module Roqua
     attr_reader :logger
 
     def initialize(logger)
-      @logger = logger
+      @logger  = logger
     end
 
     def add(level, message, options = {})
-      logger.send(level, "#{message} #{options.to_json}".strip)
+      logger.send(level, "#{Roqua.appname}.#{message} #{options.to_json}".strip)
     end
 
     [:fatal, :error, :warn, :info, :debug].each do |level|

@@ -27,9 +27,9 @@ module Roqua
         data.merge! runtimes(event)
 
         #eventlog.info event.inspect
-        eventlog.info 'roqua.web', data
+        eventlog.info "web", data
       rescue Exception => e
-        eventlog.info 'roqua.web:logerror', {class: e.class, message: e.message}
+        eventlog.info "web:logerror", {class: e.class, message: e.message}
         raise
       end
 

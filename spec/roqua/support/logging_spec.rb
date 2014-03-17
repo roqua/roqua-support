@@ -4,6 +4,8 @@ require 'stringio'
 
 module Roqua
   describe LogWrapper do
+    before { Roqua.stub(appname: 'roqua-support-testsuite') }
+
     let(:logstream)  { StringIO.new }
     let(:logger)     { Logger.new(logstream) }
     let(:logwrapper) { LogWrapper.new(logger) }

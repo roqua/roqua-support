@@ -25,7 +25,7 @@ describe ActiveRecord::Base do
     end
 
     it 'returns a preexisting or created record by querying it' do
-      allow(ActiveRecord::Base).to receive(:find_by).with(attributes).and_return record
+      allow(ActiveRecord::Base).to receive(:find_or_create_by).with(attributes).and_return record
       expect(ActiveRecord::Base.uniq_find_or_create_by attributes, &block).to eq(record)
     end
 
@@ -59,7 +59,7 @@ describe ActiveRecord::Base do
     end
 
     it 'returns a preexisting or created record by querying it' do
-      allow(ActiveRecord::Base).to receive(:find_by).with(attributes).and_return record
+      allow(ActiveRecord::Base).to receive(:find_or_create_by!).with(attributes).and_return record
       expect(ActiveRecord::Base.uniq_find_or_create_by! attributes, &block).to eq(record)
     end
 

@@ -1,3 +1,5 @@
+* remove dubious return from ensure in activerecord extensions
+
 ## 0.1.5 / 2014-03-10
 
 * Make sure to raise when uniq_find_or_create cannot find a record

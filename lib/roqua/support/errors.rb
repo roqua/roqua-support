@@ -35,11 +35,17 @@ module Roqua
           # Appsignal.send_exception(exception, parameters: parameters)
 
           if Appsignal.active?
-            transaction = Appsignal::Transaction.create(SecureRandom.uuid, ENV.to_hash)
-            transaction.set_tags(parameters)
-            transaction.add_exception(exception)
-            transaction.complete!
-            Appsignal.agent.send_queue
+            # Hackety hack around stateful mess of Appsignal gem
+            if Appsignal::Transaction.current
+              Appsignal::Transaction.current.set_tags(parameters)
+              Appsignal::Transaction.current.add_exception(exception)
+            else
+              transaction = Appsignal::Transaction.create(SecureRandom.uuid, ENV.to_hash)
+              transaction.set_tags(parameters)
+              transaction.add_exception(exception)
+              transaction.complete!
+              Appsignal.agent.send_queue
+            end
           end
         end
       end

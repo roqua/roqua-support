@@ -34,16 +34,27 @@ describe 'Error reporting' do
     let(:agent)       { double("agent") }
     let(:transaction) { double("transaction") }
 
-    it 'sends notifications to appsignal' do
+    it 'sends notifications to appsignal when there is no current exception' do
       stub_const("Appsignal", Module.new)
       Appsignal.stub(active?: true)
       Appsignal.stub(is_ignored_exception?: false, agent: agent)
-      stub_const("Appsignal::Transaction", double("Transaction", create: transaction))
+      stub_const("Appsignal::Transaction", double("Transaction", create: transaction, current: nil))
 
       transaction.should_receive(:set_tags).with({})
       transaction.should_receive(:add_exception).with(exception)
       transaction.should_receive(:complete!)
       agent.should_receive(:send_queue)
+      Roqua::Support::Errors.report exception
+    end
+
+    it 'sends notifications to appsignal when there already is a current exception' do
+      stub_const("Appsignal", Module.new)
+      Appsignal.stub(active?: true)
+      Appsignal.stub(is_ignored_exception?: false, agent: agent)
+      stub_const("Appsignal::Transaction", double("Transaction", current: transaction))
+
+      transaction.should_receive(:set_tags).with({})
+      transaction.should_receive(:add_exception).with(exception)
       Roqua::Support::Errors.report exception
     end
   end

@@ -12,5 +12,11 @@ describe Fabricate do
   it 'maintains multiple singletons' do
     Fabricate.singleton(:one).should_not == Fabricate.singleton(:two)
   end
+
+  it 'clears singletons' do
+    the_one = Fabricate.singleton(:one)
+    Fabricate.clear_singletons!
+    expect(Fabricate.singleton(:one)).not_to eq(the_one)
+  end
 end
 

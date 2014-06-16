@@ -1,13 +1,13 @@
 PATH
   remote: .
   specs:
-    roqua-support (0.1.8)
+    roqua-support (0.1.9)
       activesupport (>= 3.2, < 5.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.1.0)
+    activesupport (4.1.1)
       i18n (~> 0.6, >= 0.6.9)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
@@ -43,7 +43,7 @@ GEM
       rb-inotify (>= 0.9)
     lumberjack (1.0.4)
     method_source (0.8.2)
-    minitest (5.3.3)
+    minitest (5.3.5)
     nio4r (1.0.0)
     pry (0.9.12.6)
       coderay (~> 1.0)
@@ -66,7 +66,7 @@ GEM
     thor (0.18.1)
     thread_safe (0.3.4)
     timers (1.1.0)
-    tzinfo (1.1.0)
+    tzinfo (1.2.1)
       thread_safe (~> 0.1)
 
 PLATFORMS

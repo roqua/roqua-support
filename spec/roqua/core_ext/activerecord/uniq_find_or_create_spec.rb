@@ -15,7 +15,7 @@ end
 
 describe ActiveRecord::Base do
   let(:attributes) { double('attributes') }
-  let(:block)      { -> {} }
+  let(:block)      { -> (*args){} }
   let(:record)     { double('record') }
 
   describe '#uniq_find_or_create_by' do

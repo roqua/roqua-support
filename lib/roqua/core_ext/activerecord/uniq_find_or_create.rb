@@ -9,6 +9,12 @@ module ActiveRecord
     # containing the validation errors is returned instead.
     def self.uniq_find_or_create_by(attributes, &block)
       find_or_create_by(attributes, &block)
+    # When a real race condition occurs, activerecord has no clue about a uniqueness constraint
+    # being violated (this is exactly why validates :attribute, uniqueness: true does not work
+    # for these cases) and a plain Mysql2::Error exception is raised instead of
+    # ActiveRecord::RecordNotUnique
+    rescue Mysql2::Error => exception
+      find_by(attributes) || raise(exception)
     rescue ActiveRecord::RecordNotUnique => exception
       find_by(attributes) || raise(exception)
     end
@@ -17,6 +23,12 @@ module ActiveRecord
     # error other than uniqueness.
     def self.uniq_find_or_create_by!(attributes, &block)
       find_or_create_by!(attributes, &block)
+    # When a real race condition occurs, activerecord has no clue about a uniqueness constraint
+    # being violated (this is exactly why validates :attribute, uniqueness: true does not work
+    # for these cases) and a plain Mysql2::Error exception is raised instead of
+    # ActiveRecord::RecordNotUnique
+    rescue Mysql2::Error => exception
+      find_by(attributes) || raise(exception)
     rescue ActiveRecord::RecordNotUnique => exception
       find_by(attributes) || raise(exception)
     rescue ActiveRecord::RecordInvalid => exception

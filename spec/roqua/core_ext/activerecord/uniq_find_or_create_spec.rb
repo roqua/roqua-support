@@ -13,6 +13,11 @@ module ActiveRecord
   end
 end
 
+module Mysql2
+  class Error < StandardError
+  end
+end
+
 describe ActiveRecord::Base do
   let(:attributes) { double('attributes') }
   let(:block)      { -> (*args){} }
@@ -33,6 +38,13 @@ describe ActiveRecord::Base do
       allow(ActiveRecord::Base).to receive(:find_by).with(attributes).and_return record
       allow(ActiveRecord::Base).to receive(:find_or_create_by).with(attributes, &block)
                                                               .and_raise ActiveRecord::RecordNotUnique
+      expect(ActiveRecord::Base.uniq_find_or_create_by attributes, &block).to eq(record)
+    end
+
+    it 'returns a concurrenlty created record when activerecord is unaware of the uniqueness violation' do
+      allow(ActiveRecord::Base).to receive(:find_by).with(attributes).and_return record
+      allow(ActiveRecord::Base).to receive(:find_or_create_by).with(attributes, &block)
+                                                              .and_raise Mysql2::Error
       expect(ActiveRecord::Base.uniq_find_or_create_by attributes, &block).to eq(record)
     end
 
@@ -67,6 +79,13 @@ describe ActiveRecord::Base do
       allow(ActiveRecord::Base).to receive(:find_by).with(attributes).and_return record
       allow(ActiveRecord::Base).to receive(:find_or_create_by!).with(attributes, &block)
                                                                .and_raise ActiveRecord::RecordNotUnique
+      expect(ActiveRecord::Base.uniq_find_or_create_by! attributes, &block).to eq(record)
+    end
+
+    it 'returns a concurrenlty created record when activerecord is unaware of the uniqueness violation' do
+      allow(ActiveRecord::Base).to receive(:find_by).with(attributes).and_return record
+      allow(ActiveRecord::Base).to receive(:find_or_create_by!).with(attributes, &block)
+                                                               .and_raise Mysql2::Error
       expect(ActiveRecord::Base.uniq_find_or_create_by! attributes, &block).to eq(record)
     end
 

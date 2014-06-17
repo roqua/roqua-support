@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    roqua-support (0.1.7)
+    roqua-support (0.1.8)
       activesupport (>= 3.2, < 5.0)
 
 GEM
@@ -64,7 +64,7 @@ GEM
     ruby-progressbar (1.4.1)
     slop (3.4.7)
     thor (0.18.1)
-    thread_safe (0.3.3)
+    thread_safe (0.3.4)
     timers (1.1.0)
     tzinfo (1.1.0)
       thread_safe (~> 0.1)

@@ -1,3 +1,6 @@
+## 0.1.8 / 2014-06-17
+
+* catch Mysql2 errors
 * remove dubious return from ensure in activerecord extensions
 
 ## 0.1.5 / 2014-03-10

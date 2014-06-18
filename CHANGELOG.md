@@ -1,3 +1,7 @@
+## 0.1.9 / 2014-06-18
+
+* add Fabricate.clear_singletons! utility method
+
 ## 0.1.8 / 2014-06-17
 
 * catch Mysql2 errors

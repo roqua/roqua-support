@@ -45,6 +45,40 @@ require 'roqua/support/request_logger'
 Roqua::Support::RequestLogger.attach_to :action_controller
 ```
 
+### Responders
+
+#### option 1
+
+Create responder including the required responder modules and use it in a controller.
+
+```ruby
+class ApiResponder < ActionController::Responder
+  include Roqua::Responders::ApiErrorsResponder
+  include Roqua::Responders::ActiveInteractionAwareResponder
+end
+```
+
+```
+class ApiAreaController < ApplicationController
+  self.responder = ApiResponder
+  ...
+```
+
+#### option 2
+
+Use gem 'responders'
+
+And add required responder modules in a controller.
+
+```
+class ApiAreaController < ApplicationController
+  responders :flash, Roqua::Responders::ApiErrorsResponder, Roqua::Responders::ActiveInteractionAwareResponder
+  ...
+```
+
+
+Create
+
 ## Contributing
 
 1. Fork it

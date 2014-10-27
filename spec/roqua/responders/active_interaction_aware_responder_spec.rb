@@ -5,7 +5,6 @@ class AIAResponder < ActionController::Responder
   include Roqua::Responders::ActiveInteractionAwareResponder
 end
 
-require 'ostruct'
 require 'active_interaction'
 class TestInteraction < ActiveInteraction::Base
   string :some_string
@@ -19,9 +18,6 @@ class ApplicationController < ActionController::Base
 end
 
 describe Roqua::Responders::ActiveInteractionAwareResponder, type: :controller do
-  let(:valid_interaction)   { TestInteraction.run some_string: 'bla' }
-  let(:invalid_interaction) { TestInteraction.run }
-
   context 'with a valid interaction' do
     controller do
       self.responder  = AIAResponder

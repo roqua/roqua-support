@@ -76,9 +76,6 @@ class ApiAreaController < ApplicationController
   ...
 ```
 
-
-Create
-
 ## Contributing
 
 1. Fork it

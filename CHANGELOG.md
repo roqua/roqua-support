@@ -1,3 +1,8 @@
+## 0.1.10 / 2014-10-30
+
+* Added ActiveInteractionAwareResponder
+* Added ApiErrorsResponder
+
 ## 0.1.9 / 2014-06-18
 
 * add Fabricate.clear_singletons! utility method

@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'roqua/support/errors'
 
 describe 'Error reporting' do
@@ -12,6 +13,7 @@ describe 'Error reporting' do
   let(:logwrapper) { Roqua::LogWrapper.new(logger) }
 
   before do
+    Rails.env = 'foo' # in test we don't log
     Roqua.logger = logwrapper
   end
 

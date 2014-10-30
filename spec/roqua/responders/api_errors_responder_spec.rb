@@ -16,7 +16,7 @@ end
 
 describe Roqua::Responders::ApiErrorsResponder, type: :controller do
   context 'with an invalid model' do
-    controller do
+    controller(ApplicationController) do
       self.responder  = AEResponder
       def index
         sm = SomeModel.new name: 'foo'

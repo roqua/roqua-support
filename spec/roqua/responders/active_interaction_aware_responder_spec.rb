@@ -19,7 +19,7 @@ end
 
 describe Roqua::Responders::ActiveInteractionAwareResponder, type: :controller do
   context 'with a valid interaction' do
-    controller do
+    controller(ApplicationController) do
       self.responder  = AIAResponder
       def index
         use_case = TestInteraction.run some_string: 'bla'
@@ -37,7 +37,7 @@ describe Roqua::Responders::ActiveInteractionAwareResponder, type: :controller d
   end
 
   context 'with an invalid interaction' do
-    controller do
+    controller(ApplicationController) do
       self.responder  = AIAResponder
       def index
         use_case = TestInteraction.run

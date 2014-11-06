@@ -1,3 +1,7 @@
+## 0.1.11 / 2014-11-06
+
+* Don't catch Mysql2 errors
+
 ## 0.1.10 / 2014-10-30
 
 * Added ActiveInteractionAwareResponder

@@ -76,6 +76,30 @@ class ApiAreaController < ApplicationController
   ...
 ```
 
+### ActiveInteraction extensions
+
+```
+require 'roqua/core_ext/active_interaction/filters/date_time_as_unix_extension'
+```
+
+Allows a date or date_time attribute to be set by a unix time e.g. 1415608242 or '1415608242'.
+
+
+```
+require 'roqua/core_ext/active_interaction/filters/duration_filter'
+
+class DurationFilterOperation < ActiveInteraction::Base
+  duration :duration
+  duration :foo, strip: true, default: nil # value is nil if duration is 0.
+end
+
+DurationFilterOperation.run(duration: 1.week)
+DurationFilterOperation.run(duration: {value: 1, unit: 'weeks'})
+```
+
+Allows you to specify an ActiveSupport::Duration attribute.
+
+
 ## Contributing
 
 1. Fork it

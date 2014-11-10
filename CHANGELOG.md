@@ -1,3 +1,8 @@
+## 0.1.12 / 2014-11-10
+
+* Added roqua/core_ext/active_interaction/filters/date_time_as_unix_extension that allows date_times attributes to be set by a unix timestamp.
+* Added roqua/core_ext/active_interaction/filters/duration_filter that allows ActiveSupport::Duration attributes.
+
 ## 0.1.11 / 2014-11-06
 
 * Don't catch Mysql2 errors

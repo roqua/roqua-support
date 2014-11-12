@@ -25,7 +25,12 @@ module Roqua
 
         # Notify Airbrake
         if const_defined?(:Airbrake)
-          parameters = parameters.merge controller.airbrake_request_data if controller
+          if controller && controller.respond_to?(:airbrake_request_data)
+            request_data = controller.airbrake_request_data
+            if request_data.is_a? Hash
+              parameters = parameters.merge request_data
+            end
+          end
           Airbrake.notify_or_ignore(exception, parameters: parameters)
         end
 

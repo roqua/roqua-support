@@ -1,3 +1,6 @@
+
+* Robustify reporting request data
+
 ## 0.1.13 / 2014-11-12
 
 * Add support for reporting request data to Airbrake

@@ -1,3 +1,7 @@
+## 0.1.13 / 2014-11-12
+
+* Add support for reporting request data to Airbrake
+
 ## 0.1.12 / 2014-11-10
 
 * Added roqua/core_ext/active_interaction/filters/date_time_as_unix_extension that allows date_times attributes to be set by a unix timestamp.

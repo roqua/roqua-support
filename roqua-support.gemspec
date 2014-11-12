@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.license       = "MIT"
   gem.authors       = ["Marten Veldthuis"]
   gem.email         = "marten@roqua.nl"
-  gem.homepage      = "https://github.com/roqua/healthy"
+  gem.homepage      = "https://github.com/roqua/roqua-support"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

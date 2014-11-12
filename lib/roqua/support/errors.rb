@@ -11,6 +11,7 @@ module Roqua
 
       def self.report(exception, extra_params = {})
         return if const_defined?(:Rails) and Rails.env.test?
+        controller = extra_params.delete :controller
         parameters = extra_parameters.merge(extra_params)
 
         # Notify Roqua logging
@@ -24,6 +25,7 @@ module Roqua
 
         # Notify Airbrake
         if const_defined?(:Airbrake)
+          parameters = parameters.merge controller.airbrake_request_data if controller
           Airbrake.notify_or_ignore(exception, parameters: parameters)
         end
 

@@ -26,10 +26,21 @@ describe 'Error reporting' do
     Roqua::Support::Errors.report exception
   end
 
-  it 'sends notifications to airbrake' do
-    stub_const("Airbrake", double("Airbrake", is_ignored_exception?: false))
-    Airbrake.should_receive(:notify_or_ignore).with(exception, parameters: {})
-    Roqua::Support::Errors.report exception
+  context 'when Airbrake is defined' do
+    before do
+      stub_const('Airbrake', double('Airbrake', is_ignored_exception?: false))
+    end
+
+    it 'sends notifications to airbrake' do
+      Airbrake.should_receive(:notify_or_ignore).with(exception, parameters: {})
+      Roqua::Support::Errors.report exception
+    end
+
+    it 'adds request data when a controller is passed in' do
+      controller = double(airbrake_request_data: {request: 'data'})
+      Airbrake.should_receive(:notify_or_ignore).with(exception, parameters: {request: 'data'})
+      Roqua::Support::Errors.report exception, controller: controller
+    end
   end
 
   context 'when Appsignal is loaded' do

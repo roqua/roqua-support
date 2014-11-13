@@ -37,8 +37,27 @@ describe 'Error reporting' do
     end
 
     it 'adds request data when a controller is passed in' do
-      controller = double(airbrake_request_data: {request: 'data'})
-      Airbrake.should_receive(:notify_or_ignore).with(exception, parameters: {request: 'data'})
+      controller = double(airbrake_request_data: {request: 'data', parameters: {request: 'param'}})
+      expect(Airbrake).to receive(:notify_or_ignore)
+                      .with(exception, request: 'data', parameters: {request: 'param', some: 'context'})
+      Roqua::Support::Errors.report exception, controller: controller, some: 'context'
+    end
+
+    it 'does not fail with extra parameters of incompatible type' do
+      Roqua::Support::Errors.extra_parameters = ['extra', 'param']
+      expect(Airbrake).to receive(:notify_or_ignore).with(exception, parameters: {})
+      Roqua::Support::Errors.report exception
+      Roqua::Support::Errors.extra_parameters = {}
+    end
+
+    it 'does not fail with context of incompatible type' do
+      expect(Airbrake).to receive(:notify_or_ignore).with(exception, parameters: {})
+      Roqua::Support::Errors.report exception, ['controller', 'extra_param']
+    end
+
+    it 'does not fail with request data of incompatible type' do
+      controller = double(airbrake_request_data: ['request', 'data'])
+      expect(Airbrake).to receive(:notify_or_ignore).with(exception, parameters: {})
       Roqua::Support::Errors.report exception, controller: controller
     end
   end

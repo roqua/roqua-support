@@ -1,5 +1,7 @@
+## 0.1.14 / 2014-11-13
 
-* Robustify reporting request data
+* Don't put request data under params
+* Robustify reporting exceptions
 
 ## 0.1.13 / 2014-11-12
 

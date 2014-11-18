@@ -1,3 +1,7 @@
+## 0.1.15 / 2014-11-18
+
+* log Airbrake UUID when reporting exceptions
+
 ## 0.1.14 / 2014-11-13
 
 * Don't put request data under params

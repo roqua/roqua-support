@@ -26,6 +26,17 @@ describe 'Error reporting' do
     Roqua::Support::Errors.report exception
   end
 
+  it 'sends the airbrake notification id to the eventlog when present' do
+    stub_const('Airbrake', double('Airbrake', notify_or_ignore: 'airbrake_notification_uuid'))
+    Roqua.logger.should_receive(:error)
+                .with('roqua.exception',
+                      class_name: 'Exception',
+                      message: 'exception_message',
+                      airbrake_notification: 'https://airbrake.io/locate/airbrake_notification_uuid',
+                      parameters: {})
+    Roqua::Support::Errors.report exception
+  end
+
   context 'when Airbrake is defined' do
     before do
       stub_const('Airbrake', double('Airbrake', is_ignored_exception?: false))

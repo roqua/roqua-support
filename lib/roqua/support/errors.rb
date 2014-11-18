@@ -12,12 +12,12 @@ module Roqua
       def self.report(exception, context = {})
         return if const_defined?(:Rails) and Rails.env.test?
         parameters, controller = merge_parameters(context)
-        # Notify Roqua logging
-        log_exception(exception, parameters)
         # Notify Airbrake
-        notify_airbrake(exception, controller, parameters)
+        airbrake_id = notify_airbrake(exception, controller, parameters)
         # Notify AppSignal
         notify_appsignal(exception, parameters)
+        # Notify Roqua logging
+        log_exception(exception, parameters, airbrake_id)
       end
 
       private
@@ -38,14 +38,18 @@ module Roqua
         end
       end
 
-      def self.log_exception(exception, parameters = {})
+      def self.log_exception(exception, parameters = {}, airbrake_id = nil)
         begin
           if Roqua.respond_to?(:logger)
-            Roqua.logger.error('roqua.exception',
-                               class_name: exception.class.to_s,
-                               message: exception.message,
-                               backtrace: exception.backtrace,
-                               parameters: parameters)
+            exception_info = {class_name: exception.class.to_s,
+                              message: exception.message,
+                              parameters: parameters}
+            if airbrake_id.present?
+              exception_info[:airbrake_notification] = "https://airbrake.io/locate/#{airbrake_id}"
+            else
+              exception_info[:backtrace] = exception.backtrace
+            end
+            Roqua.logger.error('roqua.exception', exception_info)
           end
         rescue Exception
         end

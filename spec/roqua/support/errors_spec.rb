@@ -17,24 +17,44 @@ describe 'Error reporting' do
     Roqua.logger = logwrapper
   end
 
-  it 'sends notifications to the eventlog' do
-    Roqua.logger.should_receive(:error).with('roqua.exception',
-                                             class_name: 'Exception',
-                                             message: 'exception_message',
-                                             backtrace: ['back', 'trace', 'lines'],
-                                             parameters: {})
-    Roqua::Support::Errors.report exception
-  end
+  context 'when the Roqua logger is defined' do
+    it 'supports default extra params' do
+      Roqua::Support::Errors.stub(extra_parameters: {organization: 'some_org'})
+      Roqua.logger.should_receive(:error).with('roqua.exception',
+                                               class_name: 'Exception',
+                                               message: 'exception_message',
+                                               backtrace: ['back', 'trace', 'lines'],
+                                               parameters: {organization: 'some_org'})
+      Roqua::Support::Errors.report exception
+    end
 
-  it 'sends the airbrake notification id to the eventlog when present' do
-    stub_const('Airbrake', double('Airbrake', notify_or_ignore: 'airbrake_notification_uuid'))
-    Roqua.logger.should_receive(:error)
-                .with('roqua.exception',
-                      class_name: 'Exception',
-                      message: 'exception_message',
-                      airbrake_notification: 'https://airbrake.io/locate/airbrake_notification_uuid',
-                      parameters: {})
-    Roqua::Support::Errors.report exception
+    it 'sends notifications to the eventlog' do
+      Roqua.logger.should_receive(:error).with('roqua.exception',
+                                               class_name: 'Exception',
+                                               message: 'exception_message',
+                                               backtrace: ['back', 'trace', 'lines'],
+                                               parameters: {})
+      Roqua::Support::Errors.report exception
+    end
+
+    it 'skips the backtrace when the skip_backtrace flag is set' do
+      Roqua.logger.should_receive(:error).with('roqua.exception',
+                                               class_name: 'Exception',
+                                               message: 'exception_message',
+                                               parameters: {})
+      Roqua::Support::Errors.report exception, skip_backtrace: true
+    end
+
+    it 'sends the airbrake notification id to the eventlog when present' do
+      stub_const('Airbrake', double('Airbrake', notify_or_ignore: 'airbrake_notification_uuid'))
+      Roqua.logger.should_receive(:error)
+                  .with('roqua.exception',
+                        class_name: 'Exception',
+                        message: 'exception_message',
+                        airbrake_notification: 'https://airbrake.io/locate/airbrake_notification_uuid',
+                        parameters: {})
+      Roqua::Support::Errors.report exception
+    end
   end
 
   context 'when Airbrake is defined' do
@@ -100,15 +120,5 @@ describe 'Error reporting' do
       transaction.should_receive(:add_exception).with(exception)
       Roqua::Support::Errors.report exception
     end
-  end
-
-  it 'supports default extra params' do
-    Roqua::Support::Errors.stub(extra_parameters: {organization: 'some_org'})
-    Roqua.logger.should_receive(:error).with('roqua.exception',
-                                             class_name: 'Exception',
-                                             message: 'exception_message',
-                                             backtrace: ['back', 'trace', 'lines'],
-                                             parameters: {organization: 'some_org'})
-    Roqua::Support::Errors.report exception
   end
 end

@@ -1,3 +1,7 @@
+
+
+* Add support for skipping the backtrace in the logs
+
 ## 0.1.15 / 2014-11-18
 
 * log Airbrake UUID when reporting exceptions

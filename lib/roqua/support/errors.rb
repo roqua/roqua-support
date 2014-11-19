@@ -11,34 +11,36 @@ module Roqua
 
       def self.report(exception, context = {})
         return if const_defined?(:Rails) and Rails.env.test?
-        parameters, controller = merge_parameters(context)
+        parameters, controller, skip_backtrace = merge_parameters(context)
         # Notify Airbrake
         airbrake_id = notify_airbrake(exception, controller, parameters)
         # Notify AppSignal
         notify_appsignal(exception, parameters)
         # Notify Roqua logging
-        log_exception(exception, parameters, airbrake_id)
+        log_exception(exception, parameters, airbrake_id, skip_backtrace)
       end
 
       private
 
       def self.merge_parameters(context)
         begin
-          if context.is_a?(Hash) && extra_parameters.is_a?(Hash)
+          if context.is_a?(Hash)
             controller = context.delete :controller
-            parameters = extra_parameters.merge(context)
-          elsif context.is_a?(Hash)
-            controller = context.delete :controller
-            parameters = context
+            skip_backtrace = context.delete :skip_backtrace
+            if extra_parameters.is_a?(Hash)
+              parameters = extra_parameters.merge(context)
+            else context.is_a?(Hash)
+              parameters = context
+            end
           elsif extra_parameters.is_a?(Hash)
             parameters = extra_parameters
           end
-          [parameters, controller]
+          [parameters, controller, skip_backtrace]
         rescue Exception
         end
       end
 
-      def self.log_exception(exception, parameters = {}, airbrake_id = nil)
+      def self.log_exception(exception, parameters = {}, airbrake_id = nil, skip_backtrace = false)
         begin
           if Roqua.respond_to?(:logger)
             exception_info = {class_name: exception.class.to_s,
@@ -46,7 +48,7 @@ module Roqua
                               parameters: parameters}
             if airbrake_id.present?
               exception_info[:airbrake_notification] = "https://airbrake.io/locate/#{airbrake_id}"
-            else
+            elsif !skip_backtrace
               exception_info[:backtrace] = exception.backtrace
             end
             Roqua.logger.error('roqua.exception', exception_info)

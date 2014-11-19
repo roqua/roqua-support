@@ -3,7 +3,7 @@ require 'roqua/support/stats'
 
 describe 'Error reporting' do
   let(:backend) { double("StatsBackend") }
-  let(:stats)   { Roqua::Stats.new(backend) }
+  let(:stats)   { Roqua::Support::Stats.new(backend) }
 
   before do
     Roqua.appname = 'appname'

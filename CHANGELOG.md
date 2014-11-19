@@ -1,4 +1,4 @@
-
+## 0.1.16 / 2014-11-19
 
 * Add support for skipping the backtrace in the logs
 

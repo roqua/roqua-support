@@ -12,12 +12,13 @@ module Roqua
       def self.report(exception, context = {})
         return if const_defined?(:Rails) and Rails.env.test?
         parameters, controller, skip_backtrace = merge_parameters(context)
+        notification_urls = []
         # Notify Airbrake
-        airbrake_id = notify_airbrake(exception, controller, parameters)
+        notification_urls << notify_airbrake(exception, controller, parameters)
         # Notify AppSignal
-        notify_appsignal(exception, parameters)
+        notification_urls << notify_appsignal(exception, parameters)
         # Notify Roqua logging
-        log_exception(exception, parameters, airbrake_id, skip_backtrace)
+        log_exception(exception, parameters, notification_urls.compact, skip_backtrace)
       end
 
       private
@@ -29,7 +30,7 @@ module Roqua
             skip_backtrace = context.delete :skip_backtrace
             if extra_parameters.is_a?(Hash)
               parameters = extra_parameters.merge(context)
-            else context.is_a?(Hash)
+            else
               parameters = context
             end
           elsif extra_parameters.is_a?(Hash)
@@ -40,17 +41,15 @@ module Roqua
         end
       end
 
-      def self.log_exception(exception, parameters = {}, airbrake_id = nil, skip_backtrace = false)
+      def self.log_exception(exception, parameters = {}, notification_urls = [], skip_backtrace = false)
         begin
           if Roqua.respond_to?(:logger)
             exception_info = {class_name: exception.class.to_s,
                               message: exception.message,
                               parameters: parameters}
-            if airbrake_id.present?
-              exception_info[:airbrake_notification] = "https://airbrake.io/locate/#{airbrake_id}"
-            elsif !skip_backtrace
-              exception_info[:backtrace] = exception.backtrace
-            end
+            exception_info[:notification_urls] = notification_urls if notification_urls.present?
+            exception_info[:backtrace] = exception.backtrace unless skip_backtrace
+            puts exception_info.inspect
             Roqua.logger.error('roqua.exception', exception_info)
           end
         rescue Exception
@@ -72,7 +71,8 @@ module Roqua
               end
             end
             request_data ||= {parameters: parameters}
-            Airbrake.notify_or_ignore(exception, request_data)
+            uuid = Airbrake.notify_or_ignore(exception, request_data)
+            "https://airbrake.io/locate/#{uuid}" if uuid
           end
         rescue Exception
         end

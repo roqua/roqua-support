@@ -19,6 +19,13 @@ module Roqua
         Roqua.stats.increment("#{message}.failed")
         raise
       end
+
+      def eventlog
+        Roqua.logger
+      end
     end
   end
+
+  # Roqua::Logging is deprecated, this will keep it alive for now
+  Logging = Support::Helpers
 end

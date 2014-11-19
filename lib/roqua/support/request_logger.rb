@@ -11,7 +11,7 @@ module Roqua
     end
 
     class RequestLogger < ActiveSupport::LogSubscriber
-      include Roqua::Logging
+      include Roqua::Support::Helpers
 
       def process_action(event)
         payload = event.payload

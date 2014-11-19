@@ -1,4 +1,4 @@
-require 'roqua/support/logging'
+require 'roqua/support/log_wrapper'
 require 'logger'
 require 'stringio'
 
@@ -63,25 +63,6 @@ module Roqua
             raise "Foo"
           end
         }.to raise_error('Foo')
-      end
-    end
-
-    describe '.lifecycle' do
-      it 'wraps given method' do
-        ::Roqua.stub(:logger => logwrapper)
-
-        test = Class.new do
-          include Logging
-
-          def foo
-            'bar'
-          end
-          log :foo, 'roqua.testevent.foo'
-        end
-
-        test.new.foo.should == 'bar'
-        log.should include('roqua.testevent.foo:started')
-        log.should include('roqua.testevent.foo:finished')
       end
     end
   end

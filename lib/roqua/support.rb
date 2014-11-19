@@ -1,6 +1,7 @@
 require 'logger'
 require 'roqua/support/logging'
 require 'roqua/support/errors'
+require 'roqua/support/stats'
 
 module Roqua
   class << self
@@ -18,6 +19,14 @@ module Roqua
 
     def logger=(logger)
       @logger = LogWrapper.new(logger)
+    end
+
+    def stats
+      @stats ||= Stats.new
+    end
+
+    def stats=(stats)
+      @stats = stats
     end
   end
 end

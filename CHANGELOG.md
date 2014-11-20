@@ -1,3 +1,7 @@
+## 0.1.18
+
+* Fix default stats backend
+
 ## 0.1.17 / 2014-11-20
 
 * Add support for Hosted Graphite through Roqua.stats

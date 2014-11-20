@@ -1,3 +1,8 @@
+## 0.1.17 / 2014-11-20
+
+* Add support for Hosted Graphite through Roqua.stats
+* Deprecate Roqua::Logging in favor of Roqua::Support::Instrumentation
+
 ## 0.1.16 / 2014-11-19
 
 * Add support for skipping the backtrace in the logs

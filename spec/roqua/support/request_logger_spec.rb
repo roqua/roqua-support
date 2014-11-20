@@ -1,4 +1,4 @@
-require 'roqua/support/logging'
+require 'roqua/support/log_wrapper'
 require 'roqua/support/request_logger'
 require 'active_support/notifications'
 require 'active_support/core_ext/string'

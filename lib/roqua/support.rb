@@ -23,7 +23,7 @@ module Roqua
     end
 
     def stats
-      @stats ||= Stats.new
+      @stats ||= ::Roqua::Support::Stats.new
     end
 
     def stats=(stats)

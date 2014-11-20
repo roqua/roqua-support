@@ -1,5 +1,5 @@
 require 'logger'
-require 'roqua/support/helpers'
+require 'roqua/support/instrumentation'
 require 'roqua/support/log_wrapper'
 require 'roqua/support/errors'
 require 'roqua/support/stats'

@@ -1,8 +1,8 @@
-require 'roqua/support/helpers'
+require 'roqua/support/instrumentation'
 
 describe 'Helper methods' do
   describe '#with_instrumentation' do
-    include Roqua::Support::Helpers
+    include Roqua::Support::Instrumentation
 
     let(:logger) { double("Logger", info: nil, error: nil) }
     let(:stats)  { double("Stats", submit: nil) }

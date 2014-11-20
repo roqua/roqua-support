@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'roqua/support/stats'
 
-describe 'Error reporting' do
+describe 'Stats' do
   let(:backend) { double("StatsBackend") }
   let(:stats)   { Roqua::Support::Stats.new(backend) }
 

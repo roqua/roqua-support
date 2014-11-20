@@ -3,7 +3,7 @@ require 'roqua/support/log_wrapper'
 
 module Roqua
   module Support
-    module Helpers
+    module Instrumentation
       def with_instrumentation(message, options = {})
         started_at = Time.now.to_f
         Roqua.logger.info("#{message}:started", options)
@@ -27,5 +27,5 @@ module Roqua
   end
 
   # Roqua::Logging is deprecated, this will keep it alive for now
-  Logging = Support::Helpers
+  Logging = Support::Instrumentation
 end

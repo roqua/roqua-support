@@ -11,12 +11,12 @@ module Roqua
         finished_at = Time.now.to_f
         duration = finished_at - started_at
         Roqua.logger.info("#{message}:finished", {duration: duration}.merge(options))
-        Roqua.stats.increment("#{message}.finished")
-        Roqua.stats.measure("#{message}.duration", duration)
+        Roqua.stats.submit("#{message}.finished", 1)
+        Roqua.stats.submit("#{message}.duration", duration)
         value
       rescue => e
         Roqua.logger.error("#{message}:failed", {exception: e.class.name, message: e.message}.merge(options))
-        Roqua.stats.increment("#{message}.failed")
+        Roqua.stats.submit("#{message}.failed", 1)
         raise
       end
 

@@ -5,7 +5,7 @@ describe 'Helper methods' do
     include Roqua::Support::Helpers
 
     let(:logger) { double("Logger", info: nil, error: nil) }
-    let(:stats)  { double("Stats", increment: nil, measure: nil) }
+    let(:stats)  { double("Stats", submit: nil) }
 
     before do
       allow(Roqua).to receive(:logger).and_return(logger)
@@ -16,8 +16,8 @@ describe 'Helper methods' do
       it 'logs the start and finish lifecycle of a block' do
         expect(logger).to receive(:info).with('testevent:started', {extra: "params"}).ordered
         expect(logger).to receive(:info).with('testevent:finished', hash_including({extra: "params"})).ordered
-        expect(stats).to receive(:increment).with('testevent.finished')
-        expect(stats).to receive(:measure).with('testevent.duration', an_instance_of(Float))
+        expect(stats).to receive(:submit).with('testevent.finished', 1)
+        expect(stats).to receive(:submit).with('testevent.duration', an_instance_of(Float))
 
         with_instrumentation('testevent', extra: 'params') { 1 + 1 }
       end
@@ -31,7 +31,7 @@ describe 'Helper methods' do
       it 'logs the start and failure of a block if it raises' do
         expect(logger).to receive(:info).with('testevent:started', instance_of(Hash)).ordered
         expect(logger).to receive(:error).with('testevent:failed', instance_of(Hash)).ordered
-        expect(stats).to receive(:increment).with('testevent.failed')
+        expect(stats).to receive(:submit).with('testevent.failed', 1)
 
         with_instrumentation 'testevent' do
           raise StandardError, "Foo"

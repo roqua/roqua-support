@@ -1,7 +1,7 @@
-## HEAD
+## 0.1.17 / 2014-11-20
 
-* Add support for StatsD (eg Hosted Graphite) through Roqua.stats
-* Deprecate Roqua::Logging in favor of Roqua::Support::Helpers
+* Add support for Hosted Graphite through Roqua.stats
+* Deprecate Roqua::Logging in favor of Roqua::Support::Instrumentation
 
 ## 0.1.16 / 2014-11-19
 

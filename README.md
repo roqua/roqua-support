@@ -5,11 +5,11 @@ useful to have in RoQua's applications, but have nothing to with the domain.
 
 ## Usage
 
-### Logging
+### Instrumentation
 
 ```ruby
 class Example
-  include Roqua::Logging
+  include Roqua::Support::Instrumentation
 
   def methodname
     # This writes a single line to the event log with
@@ -27,12 +27,6 @@ class Example
       sleep 5
     end
   end
-
-  def third
-    # This example is the same as the `another` example.
-    sleep 5
-  end
-  log :third, 'example.lifecycle', optional: 'params'
 end
 ```
 

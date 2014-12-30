@@ -10,4 +10,5 @@ group :test do
   gem 'rspec-rails'
   gem 'combustion', '~> 0.5.2'
   gem 'active_interaction', '~> 1.0'
+  gem 'rspec-instrumentation-matcher'
 end

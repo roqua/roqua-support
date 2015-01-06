@@ -30,6 +30,15 @@ class Example
 end
 ```
 
+### Rails instrumentation for active_interaction operations
+
+```ruby
+# Adds the instrumentation around all active_interaction operations:
+# ActiveSupport::Notifications.instrument 'operation.active_interaction',
+#                                         class_name: self.class.to_s.underscore do
+require 'roqua/core_ext/active_interaction/rails_instrumentation'
+```
+
 ### Rails logger
 
 You can also add an additional request logger by adding this to `config/initializers/request_logger.rb`:

@@ -1,3 +1,7 @@
+## 0.1.19
+
+* Add active_interaction/rails_instrumentation
+
 ## 0.1.18
 
 * Fix default stats backend

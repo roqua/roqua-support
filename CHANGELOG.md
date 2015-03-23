@@ -1,3 +1,7 @@
+## 0.1.20
+
+* Add SubsetValidator
+
 ## 0.1.19
 
 * Add active_interaction/rails_instrumentation

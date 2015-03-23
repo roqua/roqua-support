@@ -103,6 +103,22 @@ DurationFilterOperation.run(duration: {value: 1, unit: 'weeks'})
 Allows you to specify an ActiveSupport::Duration attribute.
 
 
+### Validators
+
+```ruby
+require 'roqua/validators/subset_validator'
+```
+
+In errors.yml (Optional - Given defaults are available)
+```
+nl:
+  errors:
+    messages:
+      subset: bevat onbekende keuzes
+```
+
+
+
 ## Contributing
 
 1. Fork it

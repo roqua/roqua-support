@@ -45,6 +45,22 @@ describe 'Error reporting' do
       Roqua::Support::Errors.report exception, skip_backtrace: true
     end
 
+    it 'adds extra parameters when the error is wrapped in Wrap' do
+      Roqua.logger.should_receive(:error).with('roqua.exception',
+                                               class_name: 'RuntimeError',
+                                               message: 'exception_message',
+                                               parameters: {more: 'params'})
+      begin
+        begin
+          fail 'exception_message'
+        rescue
+          raise Roqua::Support::Errors::Wrap.new(more: 'params')
+        end
+      rescue => e
+        Roqua::Support::Errors.report e, skip_backtrace: true
+      end
+    end
+
     it 'logs notification_urls when present' do
       stub_const('Airbrake', double('Airbrake', notify_or_ignore: 'uuid'))
       Roqua.logger.should_receive(:error)
@@ -73,13 +89,6 @@ describe 'Error reporting' do
       expect(Airbrake).to receive(:notify_or_ignore)
                       .with(exception, request: 'data', parameters: {request: 'param', some: 'context'})
       Roqua::Support::Errors.report exception, controller: controller, some: 'context'
-    end
-
-    it 'does not fail with extra parameters of incompatible type' do
-      Roqua::Support::Errors.extra_parameters = ['extra', 'param']
-      expect(Airbrake).to receive(:notify_or_ignore).with(exception, parameters: {})
-      Roqua::Support::Errors.report exception
-      Roqua::Support::Errors.extra_parameters = {}
     end
 
     it 'does not fail with context of incompatible type' do

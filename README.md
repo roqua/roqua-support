@@ -48,6 +48,27 @@ require 'roqua/support/request_logger'
 Roqua::Support::RequestLogger.attach_to :action_controller
 ```
 
+### Error reporting
+
+Log and error to Roqua.logger, appsignal and/or airbrake, depending on which is configured.
+
+```ruby
+Roqua::Support::Errors.report(exception, extra: 'params')
+```
+
+Add extra info to all reports (global setting, put in initializer)
+
+```
+Roqua::Support::Errors.extra_parameters = {root_path: Rails.root.to_s}
+```
+
+When you want to add more info, but want to catch the error higher up you can raise  Errors::Wrap, which will be unwrapped by Errors.report (needs ruby >2.1, and you want to make sure it will be caught by handler calling Roqua::Support::Errors.report)
+
+```
+rescue
+  raise Roqua::Support::Errors::Wrap.new(more: 'params')
+```
+
 ### Responders
 
 #### option 1

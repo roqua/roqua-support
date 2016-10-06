@@ -45,7 +45,7 @@ describe 'Error reporting' do
       Roqua::Support::Errors.report exception, skip_backtrace: true
     end
 
-    it 'can add extra paramters by calling add_parameters' do
+    it 'can add extra parameters by calling add_parameters' do
       Roqua.logger.should_receive(:error).with \
         'roqua.exception', class_name: 'RuntimeError',
                            message: 'exception_message',
@@ -61,6 +61,25 @@ describe 'Error reporting' do
           end
         rescue
           Roqua::Support::Errors.add_parameters(even_more: 'params')
+          raise
+        end
+      rescue => e
+        Roqua::Support::Errors.report e, skip_backtrace: true
+      end
+    end
+
+    it 'will not fail when called outside of rescue or when passed the wrong format to add_parameters' do
+      Roqua.logger.should_receive(:error).with \
+        'roqua.exception', class_name: 'RuntimeError',
+                           message: 'exception_message',
+                           parameters: {}
+
+      begin
+        Roqua::Support::Errors.add_parameters('just a string')
+        begin
+          fail 'exception_message'
+        rescue
+          Roqua::Support::Errors.add_parameters('just a string')
           raise
         end
       rescue => e

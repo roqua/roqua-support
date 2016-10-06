@@ -45,6 +45,48 @@ describe 'Error reporting' do
       Roqua::Support::Errors.report exception, skip_backtrace: true
     end
 
+    it 'can add extra parameters by calling add_parameters' do
+      Roqua.logger.should_receive(:error).with \
+        'roqua.exception', class_name: 'RuntimeError',
+                           message: 'exception_message',
+                           parameters: {more: 'params',
+                                        even_more: 'params'}
+      begin
+        begin
+          begin
+            fail 'exception_message'
+          rescue
+            Roqua::Support::Errors.add_parameters(more: 'params')
+            raise
+          end
+        rescue
+          Roqua::Support::Errors.add_parameters(even_more: 'params')
+          raise
+        end
+      rescue => e
+        Roqua::Support::Errors.report e, skip_backtrace: true
+      end
+    end
+
+    it 'will not fail when called outside of rescue or when passed the wrong format to add_parameters' do
+      Roqua.logger.should_receive(:error).with \
+        'roqua.exception', class_name: 'RuntimeError',
+                           message: 'exception_message',
+                           parameters: {}
+
+      begin
+        Roqua::Support::Errors.add_parameters('just a string')
+        begin
+          fail 'exception_message'
+        rescue
+          Roqua::Support::Errors.add_parameters('just a string')
+          raise
+        end
+      rescue => e
+        Roqua::Support::Errors.report e, skip_backtrace: true
+      end
+    end
+
     it 'logs notification_urls when present' do
       stub_const('Airbrake', double('Airbrake', notify_or_ignore: 'uuid'))
       Roqua.logger.should_receive(:error)
@@ -73,13 +115,6 @@ describe 'Error reporting' do
       expect(Airbrake).to receive(:notify_or_ignore)
                       .with(exception, request: 'data', parameters: {request: 'param', some: 'context'})
       Roqua::Support::Errors.report exception, controller: controller, some: 'context'
-    end
-
-    it 'does not fail with extra parameters of incompatible type' do
-      Roqua::Support::Errors.extra_parameters = ['extra', 'param']
-      expect(Airbrake).to receive(:notify_or_ignore).with(exception, parameters: {})
-      Roqua::Support::Errors.report exception
-      Roqua::Support::Errors.extra_parameters = {}
     end
 
     it 'does not fail with context of incompatible type' do

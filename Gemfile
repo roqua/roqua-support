@@ -5,7 +5,6 @@ gemspec
 
 group :test do
   gem 'guard-rspec', '~> 4.2.6'
-  gem 'fuubar',      '~> 1.3.2'
   gem 'actionpack',       '~> 4.0'
   gem 'rspec-rails'
   gem 'combustion', '~> 0.5.2'

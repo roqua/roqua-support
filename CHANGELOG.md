@@ -1,3 +1,7 @@
+## 0.1.21
+
+* Add Errors.add_parameters(add_to: 'error_report')
+
 ## 0.1.20
 
 * Add SubsetValidator

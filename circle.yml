@@ -3,6 +3,7 @@ machine:
     version: 2.3.1
 dependencies:
   override:
+    - bundle install
     - gem install appraisal
     - appraisal
 test:

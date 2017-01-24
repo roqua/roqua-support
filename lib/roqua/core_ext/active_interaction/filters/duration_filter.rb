@@ -22,15 +22,15 @@ module ActiveInteraction
   class DurationFilter < Filter
     register :duration
 
-    def cast(value)
+    def cast(value, interaction)
       case value
       when ActiveSupport::Duration
-        (value == 0 && strip?) ? super(nil) : value
+        (value == 0 && strip?) ? super(nil, interaction) : value
       when Hash
         if value[:value].present? && (value[:value].to_i != 0 || !strip?)
           value[:value].to_i.send(value[:unit])
         else
-          super(nil)
+          super(nil, interaction)
         end
       else
         super

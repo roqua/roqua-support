@@ -1,3 +1,13 @@
 machine:
   ruby:
-    version: 2.1.0
+    version: 2.3.1
+dependencies:
+  override:
+    - bundle install
+    - gem install appraisal
+    - appraisal
+test:
+  override:
+    - appraisal rails41 bundle exec rspec
+    - appraisal rails42 bundle exec rspec
+    - appraisal rails50 bundle exec rspec

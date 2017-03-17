@@ -15,6 +15,7 @@ describe 'Error reporting' do
   before do
     Rails.env = 'foo' # in test we don't log
     Roqua.logger = logwrapper
+    allow(Roqua::Support::Errors).to receive(:transaction_type_for_category).and_return ''
   end
 
   context 'when the Roqua logger is defined' do
@@ -154,6 +155,26 @@ describe 'Error reporting' do
 
       transaction.should_receive(:set_tags).with({})
       transaction.should_receive(:add_exception).with(exception)
+      Roqua::Support::Errors.report exception
+    end
+
+    it 'sends the exception under the provided category' do
+      stub_const("Appsignal", Module.new)
+      Appsignal.stub(active?: true)
+      Appsignal.stub(is_ignored_exception?: false, agent: agent)
+      stub_const("Appsignal::Transaction", Module.new)
+      allow(Appsignal::Transaction).to receive(:current).and_return false
+      allow(transaction).to receive(:set_tags)
+      allow(transaction).to receive(:add_exception)
+      allow(transaction).to receive(:complete!)
+      allow(Appsignal.agent).to receive(:send_queue)
+      Appsignal::Transaction::BLANK = ''
+
+      uuid = SecureRandom.uuid
+      allow(SecureRandom).to receive(:uuid).and_return uuid
+
+      expect(Appsignal::Transaction).to receive(:create).with(uuid, Appsignal::Transaction::BLANK).and_return transaction
+
       Roqua::Support::Errors.report exception
     end
   end

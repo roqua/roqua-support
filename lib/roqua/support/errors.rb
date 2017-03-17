@@ -81,6 +81,7 @@ module Roqua
       end
 
       def self.notify_appsignal(exception, parameters = {})
+        transaction_type = transaction_type_for_category parameters.delete(:category)
         if const_defined?(:Appsignal) and
            not Appsignal.is_ignored_exception?(exception)
           # TODO: If and when https://github.com/appsignal/appsignal/pull/9 is merged,
@@ -93,7 +94,7 @@ module Roqua
               Appsignal::Transaction.current.set_tags(parameters)
               Appsignal::Transaction.current.add_exception(exception)
             else
-              transaction = Appsignal::Transaction.create(SecureRandom.uuid, ENV.to_hash)
+              transaction = Appsignal::Transaction.create(SecureRandom.uuid, transaction_type)
               transaction.set_tags(parameters)
               transaction.add_exception(exception)
               transaction.complete!
@@ -101,7 +102,14 @@ module Roqua
             end
           end
         end
-      rescue Exception
+      end
+
+      def self.transaction_type_for_category(category = :something_else)
+        case category
+        when :background then Appsignal::Transaction::BACKGROUND_JOB
+        when :web then        Appsignal::Transaction::HTTP_REQUEST
+        else                  Appsignal::Transaction::BLANK
+        end
       end
     end
   end

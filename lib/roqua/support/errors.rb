@@ -97,7 +97,7 @@ module Roqua
               transaction = Appsignal::Transaction.create(SecureRandom.uuid, transaction_type)
               transaction.set_tags(parameters)
               transaction.add_exception(exception)
-              transaction.complete!
+              transaction.complete_current!
               Appsignal.agent.send_queue
             end
           end

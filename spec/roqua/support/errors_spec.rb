@@ -142,7 +142,7 @@ describe 'Error reporting' do
 
       transaction.should_receive(:set_tags).with({})
       transaction.should_receive(:add_exception).with(exception)
-      transaction.should_receive(:complete!)
+      transaction.should_receive(:complete_current!)
       agent.should_receive(:send_queue)
       Roqua::Support::Errors.report exception
     end
@@ -166,7 +166,7 @@ describe 'Error reporting' do
       allow(Appsignal::Transaction).to receive(:current).and_return false
       allow(transaction).to receive(:set_tags)
       allow(transaction).to receive(:add_exception)
-      allow(transaction).to receive(:complete!)
+      allow(transaction).to receive(:complete_current!)
       allow(Appsignal.agent).to receive(:send_queue)
       Appsignal::Transaction::BLANK = ''
 

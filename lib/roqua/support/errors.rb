@@ -86,6 +86,8 @@ module Roqua
           # TODO: If and when https://github.com/appsignal/appsignal/pull/9 is merged,
           # this functionality should be supported directly by Appsignal.send_exception.
           # Appsignal.send_exception(exception, parameters: parameters)
+          #
+          transaction_type = transaction_type_for_category parameters.delete(:category)
 
           if Appsignal.active?
             # Hackety hack around stateful mess of Appsignal gem
@@ -93,15 +95,22 @@ module Roqua
               Appsignal::Transaction.current.set_tags(parameters)
               Appsignal::Transaction.current.add_exception(exception)
             else
-              transaction = Appsignal::Transaction.create(SecureRandom.uuid, ENV.to_hash)
+              transaction = Appsignal::Transaction.create(SecureRandom.uuid, transaction_type, Appsignal::Transaction::GenericRequest.new({}))
               transaction.set_tags(parameters)
               transaction.add_exception(exception)
-              transaction.complete!
+              transaction.complete_current!
               Appsignal.agent.send_queue
             end
           end
         end
-      rescue Exception
+      end
+
+      def self.transaction_type_for_category(category = nil)
+        case category
+        when :background then Appsignal::Transaction::BACKGROUND_JOB
+        when :web then        Appsignal::Transaction::HTTP_REQUEST
+        else                  Appsignal::Transaction::BLANK
+        end
       end
     end
   end

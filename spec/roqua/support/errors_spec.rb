@@ -15,6 +15,7 @@ describe 'Error reporting' do
   before do
     Rails.env = 'foo' # in test we don't log
     Roqua.logger = logwrapper
+    allow(Roqua::Support::Errors).to receive(:transaction_type_for_category).and_return ''
   end
 
   context 'when the Roqua logger is defined' do
@@ -137,11 +138,10 @@ describe 'Error reporting' do
       stub_const("Appsignal", Module.new)
       Appsignal.stub(active?: true)
       Appsignal.stub(is_ignored_exception?: false, agent: agent)
-      stub_const("Appsignal::Transaction", double("Transaction", create: transaction, current: nil))
+      stub_const("Appsignal::Transaction", Module.new{ def self.method_missing(*args); end })
+      stub_const("Appsignal::Transaction::GenericRequest", Class.new { def initialize(_); end })
+      allow(Appsignal::Transaction).to receive(:create).and_return double(set_tags: nil, add_exception: nil, complete_current!: nil)
 
-      transaction.should_receive(:set_tags).with({})
-      transaction.should_receive(:add_exception).with(exception)
-      transaction.should_receive(:complete!)
       agent.should_receive(:send_queue)
       Roqua::Support::Errors.report exception
     end
@@ -154,6 +154,27 @@ describe 'Error reporting' do
 
       transaction.should_receive(:set_tags).with({})
       transaction.should_receive(:add_exception).with(exception)
+      Roqua::Support::Errors.report exception
+    end
+
+    it 'sends the exception under the provided category' do
+      stub_const("Appsignal", Module.new)
+      Appsignal.stub(active?: true)
+      Appsignal.stub(is_ignored_exception?: false, agent: agent)
+      Appsignal.const_set :Transaction, Module.new
+      stub_const("Appsignal::Transaction::GenericRequest", Class.new { def initialize(_); end })
+      allow(Appsignal::Transaction).to receive(:current).and_return false
+      allow(transaction).to receive(:set_tags)
+      allow(transaction).to receive(:add_exception)
+      allow(transaction).to receive(:complete_current!)
+      allow(Appsignal.agent).to receive(:send_queue)
+      Appsignal::Transaction::BLANK = ''
+
+      uuid = SecureRandom.uuid
+      allow(SecureRandom).to receive(:uuid).and_return uuid
+
+      expect(Appsignal::Transaction).to receive(:create).and_return transaction
+
       Roqua::Support::Errors.report exception
     end
   end

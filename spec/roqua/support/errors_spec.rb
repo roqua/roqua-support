@@ -138,7 +138,8 @@ describe 'Error reporting' do
       stub_const("Appsignal", Module.new)
       Appsignal.stub(active?: true)
       Appsignal.stub(is_ignored_exception?: false, agent: agent)
-      stub_const("Appsignal::Transaction", double("Transaction", create: transaction, current: nil))
+      stub_const("Appsignal::Transaction", Module.new{ def self.method_missing(*args); end })
+      stub_const("Appsignal::Transaction::GenericRequest", Class.new { def initialize(_); end })
 
       transaction.should_receive(:set_tags).with({})
       transaction.should_receive(:add_exception).with(exception)
@@ -162,7 +163,8 @@ describe 'Error reporting' do
       stub_const("Appsignal", Module.new)
       Appsignal.stub(active?: true)
       Appsignal.stub(is_ignored_exception?: false, agent: agent)
-      stub_const("Appsignal::Transaction", Module.new)
+      Appsignal.const_set :Transaction, Module.new
+      stub_const("Appsignal::Transaction::GenericRequest", Class.new { def initialize(_); end })
       allow(Appsignal::Transaction).to receive(:current).and_return false
       allow(transaction).to receive(:set_tags)
       allow(transaction).to receive(:add_exception)
@@ -173,7 +175,7 @@ describe 'Error reporting' do
       uuid = SecureRandom.uuid
       allow(SecureRandom).to receive(:uuid).and_return uuid
 
-      expect(Appsignal::Transaction).to receive(:create).with(uuid, Appsignal::Transaction::BLANK).and_return transaction
+      expect(Appsignal::Transaction).to receive(:create).and_return transaction
 
       Roqua::Support::Errors.report exception
     end

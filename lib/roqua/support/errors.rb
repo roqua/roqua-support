@@ -105,7 +105,7 @@ module Roqua
         end
       end
 
-      def self.transaction_type_for_category(category = :something_else)
+      def self.transaction_type_for_category(category = nil)
         case category
         when :background then Appsignal::Transaction::BACKGROUND_JOB
         when :web then        Appsignal::Transaction::HTTP_REQUEST

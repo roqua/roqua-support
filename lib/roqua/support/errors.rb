@@ -81,12 +81,13 @@ module Roqua
       end
 
       def self.notify_appsignal(exception, parameters = {})
-        transaction_type = transaction_type_for_category parameters.delete(:category)
         if const_defined?(:Appsignal) and
            not Appsignal.is_ignored_exception?(exception)
           # TODO: If and when https://github.com/appsignal/appsignal/pull/9 is merged,
           # this functionality should be supported directly by Appsignal.send_exception.
           # Appsignal.send_exception(exception, parameters: parameters)
+          #
+          transaction_type = transaction_type_for_category parameters.delete(:category)
 
           if Appsignal.active?
             # Hackety hack around stateful mess of Appsignal gem
@@ -94,7 +95,7 @@ module Roqua
               Appsignal::Transaction.current.set_tags(parameters)
               Appsignal::Transaction.current.add_exception(exception)
             else
-              transaction = Appsignal::Transaction.create(SecureRandom.uuid, transaction_type)
+              transaction = Appsignal::Transaction.create(SecureRandom.uuid, transaction_type, Appsignal::Transaction::GenericRequest.new({}))
               transaction.set_tags(parameters)
               transaction.add_exception(exception)
               transaction.complete_current!

@@ -3,6 +3,7 @@ require 'roqua/support/instrumentation'
 require 'roqua/support/log_wrapper'
 require 'roqua/support/errors'
 require 'roqua/support/stats'
+require 'roqua/middleware/remove_hsts_header'
 
 module Roqua
   class << self

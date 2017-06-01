@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    roqua-support (0.1.22)
+    roqua-support (0.1.23)
       active_interaction (~> 3.0)
       activesupport (>= 3.2, < 6)
       naught (~> 1.0)
@@ -150,4 +150,4 @@ DEPENDENCIES
   rspec-rails
 
 BUNDLED WITH
-   1.13.7
+   1.14.6

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roqua
   module Middleware
     # Remove HSTS header because our loadbalancer will already add it instead.
@@ -10,7 +12,7 @@ module Roqua
 
       def call(env)
         @app.call(env).tap do |_status, headers, _body|
-          headers.delete('Strict-Transport-Security'.freeze)
+          headers.delete('Strict-Transport-Security')
         end
       end
     end

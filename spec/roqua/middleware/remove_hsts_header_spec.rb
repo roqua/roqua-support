@@ -33,4 +33,11 @@ describe Roqua::Middleware::RemoveHstsHeader do
 
     expect(response.headers.keys).to_not include('Strict-Transport-Security')
   end
+
+  it 'does not remove the header without the middleware' do
+    request = Rack::MockRequest.new(app)
+    response = request.get('/some/path', 'CONTENT_TYPE' => 'text/plain')
+
+    expect(response.headers.keys).to include('Strict-Transport-Security')
+  end
 end
